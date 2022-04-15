@@ -1,6 +1,6 @@
-package com.github.mikn;
+package com.github.mikn.undying;
 
-import com.github.mikn.init.EnchantmentInit;
+import com.github.mikn.undying.init.EnchantmentInit;
 import net.fabricmc.api.ModInitializer;
 import net.minecraft.core.Registry;
 import net.minecraft.resources.ResourceLocation;

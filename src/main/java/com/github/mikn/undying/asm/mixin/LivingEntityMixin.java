@@ -1,6 +1,6 @@
-package com.github.mikn.asm.mixin;
+package com.github.mikn.undying.asm.mixin;
 
-import com.github.mikn.init.EnchantmentInit;
+import com.github.mikn.undying.init.EnchantmentInit;
 import net.minecraft.advancements.Advancement;
 import net.minecraft.advancements.AdvancementProgress;
 import net.minecraft.client.multiplayer.ClientLevel;

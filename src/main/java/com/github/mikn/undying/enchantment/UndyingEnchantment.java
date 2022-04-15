@@ -1,4 +1,4 @@
-package com.github.mikn.enchantment;
+package com.github.mikn.undying.enchantment;
 
 import net.minecraft.world.entity.EquipmentSlot;
 import net.minecraft.world.item.enchantment.Enchantment;
