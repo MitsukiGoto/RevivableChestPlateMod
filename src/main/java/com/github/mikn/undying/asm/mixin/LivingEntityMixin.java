@@ -32,14 +32,17 @@ public abstract class LivingEntityMixin {
     private void injection(DamageSource damageSource, CallbackInfoReturnable<Boolean> cir) {
         if(!cir.getReturnValue()) {
             LivingEntity livingEntity = (LivingEntity) (Object) this;
-            if(livingEntity instanceof Player player && EnchantmentHelper.getEnchantmentLevel(EnchantmentInit.UNDYING, player) > 0) {
+            if(livingEntity instanceof Player player && EnchantmentHelper.getEnchantmentLevel(EnchantmentInit.UNDYING, player) > 0 && player.experienceLevel >= 5) {
                 if(player instanceof ServerPlayer serverPlayer) {
+                    // Check whether the player has done totem advancement or not
                     Advancement advancementIn = player.getServer().getAdvancements().getAdvancement(new ResourceLocation("adventure/totem_of_undying"));
                     PlayerAdvancements playerAdvancements = serverPlayer.getAdvancements();
                     if(advancementIn != null && playerAdvancements.getOrStartProgress(advancementIn).isDone()) {
                         serverPlayer.giveExperienceLevels(-5);
-                    } else {
+                    } else if(player.experienceLevel >= 10) {
                         serverPlayer.giveExperienceLevels(-10);
+                    } else {
+                        return;
                     }
                     Vec3 vec = new Vec3(serverPlayer.getX(), serverPlayer.getY(), serverPlayer.getZ());
                     serverPlayer.connection.send(new ClientboundCustomSoundPacket(new ResourceLocation("item.totem.use"), serverPlayer.getSoundSource(), vec, 1.0f, 1.0f));
