@@ -20,4 +20,9 @@ public class UndyingEnchantment extends Enchantment {
     public int getMaxLevel() {
         return 3;
     }
+
+    @Override
+    public boolean isTreasureOnly() {
+        return true;
+    }
 }
