@@ -4,8 +4,8 @@ import net.minecraft.world.entity.EquipmentSlot;
 import net.minecraft.world.item.enchantment.Enchantment;
 import net.minecraft.world.item.enchantment.EnchantmentCategory;
 
-public class RevivalEnchantment extends Enchantment {
-    public RevivalEnchantment(Rarity rarity, EquipmentSlot... equipmentSlots) {
+public class UndyingEnchantment extends Enchantment {
+    public UndyingEnchantment(Rarity rarity, EquipmentSlot... equipmentSlots) {
         super(rarity, EnchantmentCategory.ARMOR_CHEST, equipmentSlots);
     }
 

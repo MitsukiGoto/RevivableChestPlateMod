@@ -32,7 +32,7 @@ public abstract class LivingEntityMixin {
     private void injection(DamageSource damageSource, CallbackInfoReturnable<Boolean> cir) {
         if(!cir.getReturnValue()) {
             LivingEntity livingEntity = (LivingEntity) (Object) this;
-            if(livingEntity instanceof Player player && EnchantmentHelper.getEnchantmentLevel(EnchantmentInit.REVIVAL, player) > 0) {
+            if(livingEntity instanceof Player player && EnchantmentHelper.getEnchantmentLevel(EnchantmentInit.UNDYING, player) > 0) {
                 if(player instanceof ServerPlayer serverPlayer) {
                     Advancement advancementIn = player.getServer().getAdvancements().getAdvancement(new ResourceLocation("adventure/totem_of_undying"));
                     PlayerAdvancements playerAdvancements = serverPlayer.getAdvancements();
