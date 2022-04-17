@@ -32,8 +32,8 @@ public abstract class LivingEntityMixin {
                     PlayerAdvancements playerAdvancements = serverPlayer.getAdvancements();
                     if(advancementIn != null && playerAdvancements.getOrStartProgress(advancementIn).isDone()) {
                         serverPlayer.giveExperienceLevels(-6+enchantmentLevel);
-                    } else if(serverPlayer.experienceLevel >= 11-enchantmentLevel) {
-                        serverPlayer.giveExperienceLevels(-11+enchantmentLevel);
+                    } else if(serverPlayer.experienceLevel >= 11-enchantmentLevel*2) {
+                        serverPlayer.giveExperienceLevels(-11+enchantmentLevel*2);
                     } else return;
                     Vec3 vec = new Vec3(serverPlayer.getX(), serverPlayer.getY(), serverPlayer.getZ());
                     serverPlayer.connection.send(new ClientboundCustomSoundPacket(new ResourceLocation("item.totem.use"), serverPlayer.getSoundSource(), vec, 1.0f, 1.0f));
