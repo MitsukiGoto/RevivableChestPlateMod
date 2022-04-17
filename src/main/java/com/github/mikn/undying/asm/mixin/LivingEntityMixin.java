@@ -2,26 +2,18 @@ package com.github.mikn.undying.asm.mixin;
 
 import com.github.mikn.undying.init.EnchantmentInit;
 import net.minecraft.advancements.Advancement;
-import net.minecraft.advancements.AdvancementProgress;
-import net.minecraft.client.multiplayer.ClientLevel;
-import net.minecraft.client.player.LocalPlayer;
 import net.minecraft.network.protocol.game.ClientboundCustomSoundPacket;
 import net.minecraft.resources.ResourceLocation;
 import net.minecraft.server.PlayerAdvancements;
-import net.minecraft.server.ServerAdvancementManager;
 import net.minecraft.server.level.ServerPlayer;
-import net.minecraft.sounds.SoundEvents;
 import net.minecraft.world.damagesource.DamageSource;
 import net.minecraft.world.effect.MobEffectInstance;
 import net.minecraft.world.effect.MobEffects;
-import net.minecraft.world.entity.Entity;
-import net.minecraft.world.entity.EquipmentSlot;
 import net.minecraft.world.entity.LivingEntity;
 import net.minecraft.world.entity.player.Player;
 import net.minecraft.world.item.enchantment.EnchantmentHelper;
 import net.minecraft.world.phys.Vec3;
 import org.spongepowered.asm.mixin.Mixin;
-import org.spongepowered.asm.mixin.Shadow;
 import org.spongepowered.asm.mixin.injection.At;
 import org.spongepowered.asm.mixin.injection.Inject;
 import org.spongepowered.asm.mixin.injection.callback.CallbackInfoReturnable;
@@ -32,26 +24,28 @@ public abstract class LivingEntityMixin {
     private void injection(DamageSource damageSource, CallbackInfoReturnable<Boolean> cir) {
         if(!cir.getReturnValue()) {
             LivingEntity livingEntity = (LivingEntity) (Object) this;
-            if(livingEntity instanceof Player player && EnchantmentHelper.getEnchantmentLevel(EnchantmentInit.UNDYING, player) > 0 && player.experienceLevel >= 5) {
-                if(player instanceof ServerPlayer serverPlayer) {
-                    // Check whether the player has done totem advancement or not
-                    Advancement advancementIn = player.getServer().getAdvancements().getAdvancement(new ResourceLocation("adventure/totem_of_undying"));
+            int enchantmentLevel = EnchantmentHelper.getEnchantmentLevel(EnchantmentInit.UNDYING, livingEntity);
+            if(enchantmentLevel>0) {
+                if(livingEntity instanceof ServerPlayer serverPlayer) {
+                    if(serverPlayer.experienceLevel < 6-enchantmentLevel) return;
+                    Advancement advancementIn = serverPlayer.getServer().getAdvancements().getAdvancement(new ResourceLocation("adventure/totem_of_undying"));
                     PlayerAdvancements playerAdvancements = serverPlayer.getAdvancements();
                     if(advancementIn != null && playerAdvancements.getOrStartProgress(advancementIn).isDone()) {
-                        serverPlayer.giveExperienceLevels(-5);
-                    } else if(player.experienceLevel >= 10) {
-                        serverPlayer.giveExperienceLevels(-10);
-                    } else {
-                        return;
-                    }
+                        serverPlayer.giveExperienceLevels(-6+enchantmentLevel);
+                    } else if(serverPlayer.experienceLevel >= 11-enchantmentLevel) {
+                        serverPlayer.giveExperienceLevels(-11+enchantmentLevel);
+                    } else return;
                     Vec3 vec = new Vec3(serverPlayer.getX(), serverPlayer.getY(), serverPlayer.getZ());
                     serverPlayer.connection.send(new ClientboundCustomSoundPacket(new ResourceLocation("item.totem.use"), serverPlayer.getSoundSource(), vec, 1.0f, 1.0f));
                 }
-                player.setHealth(1.0f);
-                player.removeAllEffects();
-                player.addEffect(new MobEffectInstance(MobEffects.REGENERATION, 900, 1));
-                player.addEffect(new MobEffectInstance(MobEffects.ABSORPTION, 100, 1));
-                player.addEffect(new MobEffectInstance(MobEffects.FIRE_RESISTANCE, 800, 0));
+                if(!(livingEntity instanceof Player)) {
+                    if(livingEntity.hasEffect(MobEffects.ABSORPTION)&&livingEntity.hasEffect(MobEffects.FIRE_RESISTANCE)) return;
+                }
+                livingEntity.setHealth(3.0f);
+                livingEntity.removeAllEffects();
+                livingEntity.addEffect(new MobEffectInstance(MobEffects.REGENERATION, 900, 1));
+                livingEntity.addEffect(new MobEffectInstance(MobEffects.ABSORPTION, 100, 1));
+                livingEntity.addEffect(new MobEffectInstance(MobEffects.FIRE_RESISTANCE, 800, 0));
                 cir.setReturnValue(true);
             }
         }
