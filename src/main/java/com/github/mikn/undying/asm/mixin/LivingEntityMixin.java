@@ -26,6 +26,10 @@ public abstract class LivingEntityMixin {
             LivingEntity livingEntity = (LivingEntity) (Object) this;
             int enchantmentLevel = EnchantmentHelper.getEnchantmentLevel(EnchantmentInit.UNDYING, livingEntity);
             if(enchantmentLevel>0) {
+                /*
+                * If you have used totem of undying, this enchantment will cost you 11-enchantmentLevel Level,
+                * otherwise you will spend 6-enchantmentLevel Level.
+                * */
                 if(livingEntity instanceof ServerPlayer serverPlayer) {
                     if(serverPlayer.experienceLevel < 6-enchantmentLevel) return;
                     Advancement advancementIn = serverPlayer.getServer().getAdvancements().getAdvancement(new ResourceLocation("adventure/totem_of_undying"));
@@ -38,6 +42,10 @@ public abstract class LivingEntityMixin {
                     Vec3 vec = new Vec3(serverPlayer.getX(), serverPlayer.getY(), serverPlayer.getZ());
                     serverPlayer.connection.send(new ClientboundCustomSoundPacket(new ResourceLocation("item.totem.use"), serverPlayer.getSoundSource(), vec, 1.0f, 1.0f));
                 }
+                /*
+                * To avoid mobs other than players from being invincible, if the mobs has both absorption and fire_resistance,
+                * this enchantment will not affect them.
+                * */
                 if(!(livingEntity instanceof Player)) {
                     if(livingEntity.hasEffect(MobEffects.ABSORPTION)&&livingEntity.hasEffect(MobEffects.FIRE_RESISTANCE)) return;
                 }
