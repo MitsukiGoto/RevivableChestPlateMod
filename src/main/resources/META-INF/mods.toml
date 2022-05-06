@@ -1,0 +1,24 @@
+modLoader="javafml"
+loaderVersion="[36,)"
+license="MIT License"
+[[mods]]
+modId="undying"
+version="1.0"
+displayName="Undying Enchantment"
+# updateJSONURL="https://raw.githubusercontent.com/MitsukiGoto/MiknModVersions/master/LavaWalker/versions.json"
+# logoFile="examplemod.png"
+authors="Mikn"
+description='''
+'''
+[[dependencies.undying]]
+    modId="forge"
+    mandatory=true
+    versionRange="[36,)"
+    ordering="NONE"
+    side="BOTH"
+[[dependencies.undying]]
+    modId="minecraft"
+    mandatory=true
+    versionRange="[1.18.2,1.19)"
+    ordering="NONE"
+    side="BOTH"

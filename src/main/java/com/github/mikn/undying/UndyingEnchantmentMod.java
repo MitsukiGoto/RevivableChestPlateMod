@@ -1,14 +1,17 @@
 package com.github.mikn.undying;
 
 import com.github.mikn.undying.init.EnchantmentInit;
-import net.fabricmc.api.ModInitializer;
-import net.minecraft.core.Registry;
-import net.minecraft.resources.ResourceLocation;
+import net.minecraftforge.common.MinecraftForge;
+import net.minecraftforge.eventbus.api.IEventBus;
+import net.minecraftforge.fml.common.Mod;
+import net.minecraftforge.fml.javafmlmod.FMLJavaModLoadingContext;
 
-public class UndyingEnchantmentMod implements ModInitializer {
-    public static String MODID = "undying";
-    @Override
-    public void onInitialize() {
-        Registry.register(Registry.ENCHANTMENT, new ResourceLocation(UndyingEnchantmentMod.MODID, "undying"), EnchantmentInit.UNDYING);
+@Mod(UndyingEnchantmentMod.MODID)
+public class UndyingEnchantmentMod {
+    public static final String MODID = "undying";
+    public UndyingEnchantmentMod() {
+        IEventBus bus = FMLJavaModLoadingContext.get().getModEventBus();
+        EnchantmentInit.ENCHANTMENTS.register(bus);
+        MinecraftForge.EVENT_BUS.register(this);
     }
 }

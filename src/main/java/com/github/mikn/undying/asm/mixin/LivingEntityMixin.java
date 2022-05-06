@@ -24,7 +24,7 @@ public abstract class LivingEntityMixin {
     private void injection(DamageSource damageSource, CallbackInfoReturnable<Boolean> cir) {
         if(!cir.getReturnValue()) {
             LivingEntity livingEntity = (LivingEntity) (Object) this;
-            int enchantmentLevel = EnchantmentHelper.getEnchantmentLevel(EnchantmentInit.UNDYING, livingEntity);
+            int enchantmentLevel = EnchantmentHelper.getEnchantmentLevel(EnchantmentInit.UNDYING.get(), livingEntity);
             if(enchantmentLevel>0) {
                 /*
                 * If you have used totem of undying, this enchantment will cost you 11-enchantmentLevel Level,
