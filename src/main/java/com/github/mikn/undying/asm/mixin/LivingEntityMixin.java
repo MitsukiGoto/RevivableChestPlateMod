@@ -1,6 +1,8 @@
 package com.github.mikn.undying.asm.mixin;
 
+import com.github.mikn.undying.config.UndyingConfig;
 import com.github.mikn.undying.init.EnchantmentInit;
+import me.shedaniel.autoconfig.AutoConfig;
 import net.minecraft.advancements.Advancement;
 import net.minecraft.network.protocol.game.ClientboundCustomSoundPacket;
 import net.minecraft.resources.ResourceLocation;
@@ -22,7 +24,11 @@ import org.spongepowered.asm.mixin.injection.callback.CallbackInfoReturnable;
 public abstract class LivingEntityMixin {
     @Inject(method= "checkTotemDeathProtection(Lnet/minecraft/world/damagesource/DamageSource;)Z", at=@At("RETURN"), cancellable = true)
     private void injection(DamageSource damageSource, CallbackInfoReturnable<Boolean> cir) {
+        AutoConfig.getConfigHolder(UndyingConfig.class).save();
+        UndyingConfig config = AutoConfig.getConfigHolder(UndyingConfig.class).getConfig();
         if(!cir.getReturnValue()) {
+            int experienceLevelThatShouldBeLostIfTotemHasBeenUsed = config.experienceLevelThatShouldBeLostIfTotemHasBeenUsed;
+            int experienceLevelThatShouldBeLoseIfTotemHasNeverBeenUsed = config.experienceLevelThatShouldBeLostIfTotemHasNeverBeenUsed;
             LivingEntity livingEntity = (LivingEntity) (Object) this;
             int enchantmentLevel = EnchantmentHelper.getEnchantmentLevel(EnchantmentInit.UNDYING, livingEntity);
             if(enchantmentLevel>0) {
@@ -31,13 +37,13 @@ public abstract class LivingEntityMixin {
                 * otherwise you will spend 6-enchantmentLevel Level.
                 * */
                 if(livingEntity instanceof ServerPlayer serverPlayer) {
-                    if(serverPlayer.experienceLevel < 6-enchantmentLevel) return;
+                    if(serverPlayer.experienceLevel < experienceLevelThatShouldBeLostIfTotemHasBeenUsed-enchantmentLevel) return;
                     Advancement advancementIn = serverPlayer.getServer().getAdvancements().getAdvancement(new ResourceLocation("adventure/totem_of_undying"));
                     PlayerAdvancements playerAdvancements = serverPlayer.getAdvancements();
                     if(advancementIn != null && playerAdvancements.getOrStartProgress(advancementIn).isDone()) {
-                        serverPlayer.giveExperienceLevels(-6+enchantmentLevel);
-                    } else if(serverPlayer.experienceLevel >= 11-enchantmentLevel*2) {
-                        serverPlayer.giveExperienceLevels(-11+enchantmentLevel*2);
+                        serverPlayer.giveExperienceLevels(-experienceLevelThatShouldBeLostIfTotemHasBeenUsed+enchantmentLevel);
+                    } else if(serverPlayer.experienceLevel >= experienceLevelThatShouldBeLoseIfTotemHasNeverBeenUsed-enchantmentLevel*2) {
+                        serverPlayer.giveExperienceLevels(-experienceLevelThatShouldBeLoseIfTotemHasNeverBeenUsed+enchantmentLevel*2);
                     } else return;
                     Vec3 vec = new Vec3(serverPlayer.getX(), serverPlayer.getY(), serverPlayer.getZ());
                     serverPlayer.connection.send(new ClientboundCustomSoundPacket(new ResourceLocation("item.totem.use"), serverPlayer.getSoundSource(), vec, 1.0f, 1.0f));
