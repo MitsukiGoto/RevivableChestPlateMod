@@ -27,8 +27,8 @@ public abstract class LivingEntityMixin {
         AutoConfig.getConfigHolder(UndyingConfig.class).save();
         UndyingConfig config = AutoConfig.getConfigHolder(UndyingConfig.class).getConfig();
         if(!cir.getReturnValue()) {
-            int experienceLevelThatShouldBeLostIfTotemHasBeenUsed = config.experienceLevelThatShouldBeLostIfTotemHasBeenUsed;
-            int experienceLevelThatShouldBeLoseIfTotemHasNeverBeenUsed = config.experienceLevelThatShouldBeLostIfTotemHasNeverBeenUsed;
+            int experienceLevelThatShouldBeLostIfTotemHasBeenUsed = config.costIfTotemHasBeenUsed;
+            int experienceLevelThatShouldBeLoseIfTotemHasNeverBeenUsed = config.costIfTotemHasNeverBeenUsed;
             LivingEntity livingEntity = (LivingEntity) (Object) this;
             int enchantmentLevel = EnchantmentHelper.getEnchantmentLevel(EnchantmentInit.UNDYING, livingEntity);
             if(enchantmentLevel>0) {

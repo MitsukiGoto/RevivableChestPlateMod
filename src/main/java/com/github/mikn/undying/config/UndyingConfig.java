@@ -6,6 +6,6 @@ import me.shedaniel.autoconfig.annotation.Config;
 
 @Config(name = UndyingEnchantmentMod.MODID)
 public class UndyingConfig implements ConfigData {
-    public int experienceLevelThatShouldBeLostIfTotemHasBeenUsed = 6;
-    public int experienceLevelThatShouldBeLostIfTotemHasNeverBeenUsed = 11;
+    public int costIfTotemHasBeenUsed = 6;
+    public int costIfTotemHasNeverBeenUsed = 11;
 }

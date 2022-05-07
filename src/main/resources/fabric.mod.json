@@ -15,6 +15,9 @@
   "entrypoints": {
     "main": [
       "com.github.mikn.undying.UndyingEnchantmentMod"
+    ],
+    "modmenu": [
+      "com.github.mikn.undying.client.screen.UndyingModMenuIntegration"
     ]
   },
   "mixins": [
