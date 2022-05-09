@@ -13,5 +13,4 @@ public class UndyingModMenuIntegration implements ModMenuApi {
     public ConfigScreenFactory<?> getModConfigScreenFactory() {
         return parent -> AutoConfig.getConfigScreen(UndyingConfig.class, parent).get();
     }
-
 }

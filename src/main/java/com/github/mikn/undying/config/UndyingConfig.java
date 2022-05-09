@@ -8,4 +8,7 @@ import me.shedaniel.autoconfig.annotation.Config;
 public class UndyingConfig implements ConfigData {
     public int costIfTotemHasBeenUsed = 6;
     public int costIfTotemHasNeverBeenUsed = 11;
+    public int additionalCostForLava = 0;
+    public int additionalCostForDrown = 0;
+    public int additionalCostForFall = 0;
 }
