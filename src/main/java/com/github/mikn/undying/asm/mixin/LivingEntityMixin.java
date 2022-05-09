@@ -1,6 +1,9 @@
 package com.github.mikn.undying.asm.mixin;
 
+import com.github.mikn.undying.UndyingEnchantmentMod;
+import com.github.mikn.undying.config.UndyingConfig;
 import com.github.mikn.undying.init.EnchantmentInit;
+import me.shedaniel.autoconfig.AutoConfig;
 import net.minecraft.advancements.Advancement;
 import net.minecraft.network.protocol.game.ClientboundCustomSoundPacket;
 import net.minecraft.resources.ResourceLocation;
@@ -22,23 +25,35 @@ import org.spongepowered.asm.mixin.injection.callback.CallbackInfoReturnable;
 public abstract class LivingEntityMixin {
     @Inject(method= "checkTotemDeathProtection(Lnet/minecraft/world/damagesource/DamageSource;)Z", at=@At("RETURN"), cancellable = true)
     private void injection(DamageSource damageSource, CallbackInfoReturnable<Boolean> cir) {
+        UndyingConfig config = AutoConfig.getConfigHolder(UndyingConfig.class).getConfig();
         if(!cir.getReturnValue()) {
             LivingEntity livingEntity = (LivingEntity) (Object) this;
             int enchantmentLevel = EnchantmentHelper.getEnchantmentLevel(EnchantmentInit.UNDYING, livingEntity);
             if(enchantmentLevel>0) {
-                /*
-                * If you have used totem of undying, this enchantment will cost you 11-enchantmentLevel Level,
-                * otherwise you will spend 6-enchantmentLevel Level.
-                * */
+                int baseCost = 0;
+                int practicalLevel = 0;
                 if(livingEntity instanceof ServerPlayer serverPlayer) {
-                    if(serverPlayer.experienceLevel < 6-enchantmentLevel) return;
                     Advancement advancementIn = serverPlayer.getServer().getAdvancements().getAdvancement(new ResourceLocation("adventure/totem_of_undying"));
                     PlayerAdvancements playerAdvancements = serverPlayer.getAdvancements();
-                    if(advancementIn != null && playerAdvancements.getOrStartProgress(advancementIn).isDone()) {
-                        serverPlayer.giveExperienceLevels(-6+enchantmentLevel);
-                    } else if(serverPlayer.experienceLevel >= 11-enchantmentLevel*2) {
-                        serverPlayer.giveExperienceLevels(-11+enchantmentLevel*2);
-                    } else return;
+                    boolean isPlayerUsedTotem = (advancementIn != null && playerAdvancements.getOrStartProgress(advancementIn).isDone());
+                    if(isPlayerUsedTotem) {
+                        baseCost = config.costIfTotemHasBeenUsed;
+                        // double practical enchantmentLevel if player has used the totem of undying
+                        practicalLevel = enchantmentLevel*2;
+                    } else {
+                        baseCost = config.costIfTotemHasNeverBeenUsed;
+                        practicalLevel = enchantmentLevel;
+                    }
+                    int enchantmentCost = calculateCostLevel(damageSource, baseCost, practicalLevel);
+                    if(enchantmentCost > 0) {
+                        // if this value is more than 0, it means that this mod gives player experience levels
+                        enchantmentCost = 0;
+                    }
+                    if(serverPlayer.experienceLevel >= -(enchantmentCost)) {
+                        serverPlayer.giveExperienceLevels(enchantmentCost);
+                    } else {
+                        return;
+                    }
                     Vec3 vec = new Vec3(serverPlayer.getX(), serverPlayer.getY(), serverPlayer.getZ());
                     serverPlayer.connection.send(new ClientboundCustomSoundPacket(new ResourceLocation("item.totem.use"), serverPlayer.getSoundSource(), vec, 1.0f, 1.0f));
                 }
@@ -57,5 +72,15 @@ public abstract class LivingEntityMixin {
                 cir.setReturnValue(true);
             }
         }
+    }
+
+    private int calculateCostLevel(DamageSource damageSource, int baseCost, int practicalEnchantmentLevel) {
+        UndyingConfig config = AutoConfig.getConfigHolder(UndyingConfig.class).getConfig();
+        return switch (damageSource.msgId) {
+            case "fall" -> -(baseCost + config.additionalCostForFall)+(practicalEnchantmentLevel);
+            case "lava" -> -(baseCost + config.additionalCostForLava)+(practicalEnchantmentLevel);
+            case "drown" -> -(baseCost + config.additionalCostForDrown)+(practicalEnchantmentLevel);
+            default -> baseCost;
+        };
     }
 }

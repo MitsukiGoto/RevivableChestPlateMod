@@ -1,4 +1,10 @@
 {
   "enchantment.undying.undying": "Undying",
-  "enchantment.undying.undying.desc": "This enchantment will save you from approaching death"
+  "enchantment.undying.undying.desc": "This enchantment will save you from approaching death",
+  "text.autoconfig.undying.option.costIfTotemHasBeenUsed": "costIfTotemHasBeenUsed",
+  "text.autoconfig.undying.option.costIfTotemHasNeverBeenUsed": "costIfTotemHasNeverBeenUsed",
+  "text.autoconfig.undying.option.additionalCostForDrown": "additionalCostForDrown",
+  "text.autoconfig.undying.option.additionalCostForLava": "additionalCostForLava",
+  "text.autoconfig.undying.option.additionalCostForFall": "additionalCostForFall",
+  "text.autoconfig.undying.title": "Configuration Menu for Undying Enchantment Mod"
 }
