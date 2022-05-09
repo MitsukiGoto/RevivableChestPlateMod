@@ -28,7 +28,6 @@ public abstract class LivingEntityMixin {
         UndyingConfig config = AutoConfig.getConfigHolder(UndyingConfig.class).getConfig();
         if(!cir.getReturnValue()) {
             LivingEntity livingEntity = (LivingEntity) (Object) this;
-            UndyingEnchantmentMod.LOGGER.error(damageSource);
             int enchantmentLevel = EnchantmentHelper.getEnchantmentLevel(EnchantmentInit.UNDYING, livingEntity);
             if(enchantmentLevel>0) {
                 int baseCost = 0;
