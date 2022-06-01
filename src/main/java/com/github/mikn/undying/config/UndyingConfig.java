@@ -7,7 +7,7 @@ import me.shedaniel.autoconfig.annotation.Config;
 @Config(name = UndyingEnchantmentMod.MODID)
 public class UndyingConfig implements ConfigData {
     public enum UndyingCost {
-        HEAVY(10), NORMAL(5), LIGHT(3); 
+        CRAZY(30), HEAVY(20), NORMAL(10), LIGHT(5), LILBIT(3); 
         private final int value;
         UndyingCost(final int value) {
             this.value = value;
