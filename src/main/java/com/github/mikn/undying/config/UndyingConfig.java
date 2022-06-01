@@ -3,6 +3,7 @@ package com.github.mikn.undying.config;
 import com.github.mikn.undying.UndyingEnchantmentMod;
 import me.shedaniel.autoconfig.ConfigData;
 import me.shedaniel.autoconfig.annotation.Config;
+import me.shedaniel.autoconfig.annotation.ConfigEntry;
 
 @Config(name = UndyingEnchantmentMod.MODID)
 public class UndyingConfig implements ConfigData {
@@ -16,4 +17,6 @@ public class UndyingConfig implements ConfigData {
             return this.value;
         }
     }
+    @ConfigEntry.Gui.EnumHandler(option = ConfigEntry.Gui.EnumHandler.EnumDisplayOption.BUTTON)
+    public UndyingCost undyingCost = UndyingCost.NORMAL;
 }
