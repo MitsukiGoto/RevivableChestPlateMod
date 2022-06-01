@@ -6,9 +6,14 @@ import me.shedaniel.autoconfig.annotation.Config;
 
 @Config(name = UndyingEnchantmentMod.MODID)
 public class UndyingConfig implements ConfigData {
-    public int costIfTotemHasBeenUsed = 6;
-    public int costIfTotemHasNeverBeenUsed = 11;
-    public int additionalCostForLava = 0;
-    public int additionalCostForDrown = 0;
-    public int additionalCostForFall = 0;
+    public enum UndyingCost {
+        HEAVY(10), NORMAL(5), LIGHT(3); 
+        private final int value;
+        UndyingCost(final int value) {
+            this.value = value;
+        }
+        public int getInt() {
+            return this.value;
+        }
+    }
 }
