@@ -33,7 +33,7 @@ public abstract class LivingEntityMixin {
                     PlayerAdvancements playerAdvancements = serverPlayer.getAdvancements();
                     boolean isPlayerUsedTotem = (advancementIn != null && playerAdvancements.getOrStartProgress(advancementIn).isDone());
                     int playerExpLevel = serverPlayer.experienceLevel;
-                    int cost = isPlayerUsedTotem ? undyingCost.getInt() : (undyingCost.getInt())*2;
+                    int cost = (isPlayerUsedTotem ? undyingCost.getInt() : (undyingCost.getInt())*2) + enchantmentLevel - 1;
                     if(playerExpLevel<cost) {
                         return;
                     }
