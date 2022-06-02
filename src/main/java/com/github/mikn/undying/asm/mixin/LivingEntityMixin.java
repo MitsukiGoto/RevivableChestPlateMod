@@ -1,5 +1,6 @@
 package com.github.mikn.undying.asm.mixin;
 
+import com.github.mikn.undying.config.UndyingConfig;
 import com.github.mikn.undying.init.EnchantmentInit;
 import net.minecraft.advancements.Advancement;
 import net.minecraft.network.protocol.game.ClientboundCustomSoundPacket;
@@ -22,23 +23,21 @@ import org.spongepowered.asm.mixin.injection.callback.CallbackInfoReturnable;
 public abstract class LivingEntityMixin {
     @Inject(method= "checkTotemDeathProtection(Lnet/minecraft/world/damagesource/DamageSource;)Z", at=@At("RETURN"), cancellable = true)
     private void injection(DamageSource damageSource, CallbackInfoReturnable<Boolean> cir) {
+        var undyingCost = UndyingConfig.undyingCost.get();
         if(!cir.getReturnValue()) {
             LivingEntity livingEntity = (LivingEntity) (Object) this;
             int enchantmentLevel = EnchantmentHelper.getEnchantmentLevel(EnchantmentInit.UNDYING.get(), livingEntity);
             if(enchantmentLevel>0) {
-                /*
-                * If you have used totem of undying, this enchantment will cost you 11-enchantmentLevel Level,
-                * otherwise you will spend 6-enchantmentLevel Level.
-                * */
                 if(livingEntity instanceof ServerPlayer serverPlayer) {
-                    if(serverPlayer.experienceLevel < 6-enchantmentLevel) return;
                     Advancement advancementIn = serverPlayer.getServer().getAdvancements().getAdvancement(new ResourceLocation("adventure/totem_of_undying"));
                     PlayerAdvancements playerAdvancements = serverPlayer.getAdvancements();
-                    if(advancementIn != null && playerAdvancements.getOrStartProgress(advancementIn).isDone()) {
-                        serverPlayer.giveExperienceLevels(-6+enchantmentLevel);
-                    } else if(serverPlayer.experienceLevel >= 11-enchantmentLevel*2) {
-                        serverPlayer.giveExperienceLevels(-11+enchantmentLevel*2);
-                    } else return;
+                    boolean isPlayerUsedTotem = (advancementIn != null && playerAdvancements.getOrStartProgress(advancementIn).isDone());
+                    int playerExpLevel = serverPlayer.experienceLevel;
+                    int cost = isPlayerUsedTotem ? undyingCost.getInt() : (undyingCost.getInt())*2;
+                    if(playerExpLevel<cost) {
+                        return;
+                    }
+                    serverPlayer.giveExperienceLevels(-cost);
                     Vec3 vec = new Vec3(serverPlayer.getX(), serverPlayer.getY(), serverPlayer.getZ());
                     serverPlayer.connection.send(new ClientboundCustomSoundPacket(new ResourceLocation("item.totem.use"), serverPlayer.getSoundSource(), vec, 1.0f, 1.0f));
                 }
