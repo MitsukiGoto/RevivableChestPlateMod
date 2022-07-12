@@ -13,10 +13,11 @@ import org.apache.logging.log4j.Logger;
 public class UndyingEnchantmentMod implements ModInitializer {
     public static final String MODID = "undying";
     public static final Logger LOGGER = LogManager.getLogger("Undying/Main");
-    public static final UndyingConfig HOLDER = AutoConfig.getConfigHolder(UndyingConfig.class).getConfig();
+    public static UndyingConfig HOLDER;
     @Override
     public void onInitialize() {
-        Registry.register(Registry.ENCHANTMENT, new ResourceLocation(UndyingEnchantmentMod.MODID, "undying"), EnchantmentInit.UNDYING);
         AutoConfig.register(UndyingConfig.class, GsonConfigSerializer::new);
+        HOLDER = AutoConfig.getConfigHolder(UndyingConfig.class).getConfig();
+        Registry.register(Registry.ENCHANTMENT, new ResourceLocation(UndyingEnchantmentMod.MODID, "undying"), EnchantmentInit.UNDYING);
     }
 }
