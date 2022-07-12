@@ -40,7 +40,7 @@ public abstract class LivingEntityMixin {
                     }
                     serverPlayer.giveExperienceLevels(-cost);
                     Vec3 vec = new Vec3(serverPlayer.getX(), serverPlayer.getY(), serverPlayer.getZ());
-                    serverPlayer.connection.send(new ClientboundCustomSoundPacket(new ResourceLocation("item.totem.use"), serverPlayer.getSoundSource(), vec, 1.0f, 1.0f));
+                    serverPlayer.connection.send(new ClientboundCustomSoundPacket(new ResourceLocation("item.totem.use"), serverPlayer.getSoundSource(), vec, 1.0f, 1.0f, serverPlayer.getRandom().nextLong()));
                 }
                 /*
                 * To avoid mobs other than players from being invincible, if the mobs has both absorption and fire_resistance,
