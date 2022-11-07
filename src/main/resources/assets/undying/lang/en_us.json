@@ -2,5 +2,7 @@
   "enchantment.undying.undying": "Undying",
   "enchantment.undying.undying.desc": "This enchantment will save you from approaching death",
   "text.autoconfig.undying.option.undyingCost": "How much Undying costs",
+  "text.autoconfig.undying.option.undyingRarity": "The Rarity",
+  "text.autoconfig.undying.option.isTreasure": "is Treasure enchantment or not",
   "text.autoconfig.undying.title": "Configuration Menu for Undying Enchantment Mod"
 }
